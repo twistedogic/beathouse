@@ -2,6 +2,7 @@ import unittest
 import src.beathouse.env.sampler as sampler
 import src.beathouse.env.bankroll as bankroll
 
+
 class TestSampler(unittest.TestCase):
     def test_dice(self):
         num = 3
@@ -9,6 +10,7 @@ class TestSampler(unittest.TestCase):
         assert len(output) == num
         for n in output:
             assert 1 <= n <= 6
+
 
 class TestBankroll(unittest.TestCase):
     def test_init(self):
@@ -29,5 +31,3 @@ class TestBankroll(unittest.TestCase):
         account.update(-10)
         account.reset()
         self.assertListEqual(account.history, expect)
-        
-
