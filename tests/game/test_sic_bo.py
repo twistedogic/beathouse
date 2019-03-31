@@ -1,5 +1,5 @@
 import unittest
-from src.beathouse.env.game import sic_bo
+from src.beathouse.envs.game import sic_bo
 
 
 class TestSicBo(unittest.TestCase):

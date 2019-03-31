@@ -1,6 +1,6 @@
 import unittest
-import src.beathouse.env.sampler as sampler
-import src.beathouse.env.bankroll as bankroll
+import src.beathouse.envs.sampler as sampler
+import src.beathouse.envs.bankroll as bankroll
 
 
 class TestSampler(unittest.TestCase):
