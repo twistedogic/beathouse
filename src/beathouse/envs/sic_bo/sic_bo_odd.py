@@ -1,5 +1,5 @@
 from enum import Enum
-from .state import State, Odd
+from ..state import State, Odd
 
 
 def count(val):

@@ -1,8 +1,18 @@
 import unittest
-from src.beathouse.envs.game import sic_bo
+from src.beathouse.envs.sic_bo import sic_bo_odd
+from src.beathouse.envs.sic_bo import sic_bo_sampler
+from src.beathouse.envs.sic_bo import sic_bo_env
 
 
-class TestSicBo(unittest.TestCase):
+class TestSicBoSampler(unittest.TestCase):
+    def test_dice(self):
+        num = 3
+        out = sic_bo_sampler.dice(num)
+        assert len(out) == num
+        assert all([1 <= i <= 6 for i in out])
+
+
+class TestSicBoOdd(unittest.TestCase):
     def test_triple(self):
         cases = [
             dict(val=3, out=[3, 3, 3], expect=True),
@@ -13,7 +23,7 @@ class TestSicBo(unittest.TestCase):
             val = case.get("val")
             out = case.get("out")
             expect = case.get("expect")
-            assert sic_bo.is_triple(val)(out) == expect
+            assert sic_bo_odd.is_triple(val)(out) == expect
 
     def test_count(self):
         cases = [
@@ -27,7 +37,7 @@ class TestSicBo(unittest.TestCase):
             val = case.get("val")
             out = case.get("out")
             expect = case.get("expect")
-            assert sic_bo.count(val)(out) == expect
+            assert sic_bo_odd.count(val)(out) == expect
 
     def test_specific_two(self):
         cases = [
@@ -40,12 +50,12 @@ class TestSicBo(unittest.TestCase):
             b = case.get("b")
             out = case.get("out")
             expect = case.get("expect")
-            assert sic_bo.specific_two(a, b)(out) == expect
+            assert sic_bo_odd.specific_two(a, b)(out) == expect
 
     def test_value_bets(self):
         bets = [(4, 10)]
         test_input = [1, 1, 2]
-        out = sic_bo.value_bets(bets)
+        out = sic_bo_odd.value_bets(bets)
         output = dict()
         for k, v in out.items():
             if v.func(test_input):
@@ -54,14 +64,14 @@ class TestSicBo(unittest.TestCase):
         self.assertEqual(output, expect)
 
     def test_payout(self):
-        payout = sic_bo.payout()
+        payout = sic_bo_odd.payout()
         test = payout.get("triple_1")
         assert test.func([1, 1, 1])
 
 
 class TestSicBoGame(unittest.TestCase):
     def setUp(self):
-        self.game = sic_bo.Game()
+        self.game = sic_bo_odd.Game()
 
     def test_triple(self):
         out = self.game.evaluate([1, 1, 1])
@@ -88,3 +98,11 @@ class TestSicBoGame(unittest.TestCase):
             combination_2_3=5,
         )
         self.assertEqual(out, expect)
+
+
+class TestSicBoEnv(unittest.TestCase):
+    def setUp(self):
+        start = 1000
+        min_bet = 100
+        max_bet = 1000
+        self.env = sic_bo_env.SicBoEnv()
