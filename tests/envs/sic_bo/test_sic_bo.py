@@ -1,15 +1,6 @@
 import unittest
 from src.beathouse.envs.sic_bo import sic_bo_odd
-from src.beathouse.envs.sic_bo import sic_bo_sampler
 from src.beathouse.envs.sic_bo import sic_bo_env
-
-
-class TestSicBoSampler(unittest.TestCase):
-    def test_dice(self):
-        num = 3
-        out = sic_bo_sampler.dice(num)
-        assert len(out) == num
-        assert all([1 <= i <= 6 for i in out])
 
 
 class TestSicBoOdd(unittest.TestCase):
@@ -102,7 +93,40 @@ class TestSicBoGame(unittest.TestCase):
 
 class TestSicBoEnv(unittest.TestCase):
     def setUp(self):
-        start = 1000
-        min_bet = 100
-        max_bet = 1000
-        self.env = sic_bo_env.SicBoEnv()
+        opt = dict(start=1000, min_bet=100, max_bet=1000)
+        self.env = sic_bo_env.SicBoEnv(**opt)
+
+    def test_bet_size(self):
+        cases = [
+            dict(bets=dict(a=100, b=10), size=110),
+            dict(bets=dict(a=100, b=-10), size=90),
+        ]
+        for case in cases:
+            bets = case.get("bets")
+            expect = case.get("size")
+            assert self.env._bet_size(bets) == expect
+
+    def test_dice(self):
+        num = 3
+        out = self.env._dice()
+        assert len(out) == num
+        assert all([1 <= i <= 6 for i in out])
+
+    def test_get_obs(self):
+        self.env.reset()
+        balance, std = self.env._get_obs()
+        assert balance == 1000
+        assert std == 0
+
+    def self_action_to_bets(self):
+        nb_actions = self.env.action_space.n
+        actions = [100] * nb_actions
+        bets = self.env._action_to_bets(actions)
+        assert len(bets) == nb_actions
+
+    def test_reward(self):
+        bets = dict(a=100, b=100)
+        payout = dict(a=7, c=3)
+        out = self.env._reward(bets, payout)
+        expect = 600
+        assert out == expect

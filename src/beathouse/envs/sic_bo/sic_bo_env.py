@@ -1,21 +1,31 @@
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
+from numpy import std
 from .sic_bo_odd import Game
-from .sic_bo_sampler import dice
 from ..base import Bankroll
 
 
-class SicBoEnv(gym.Env, Game, Bankroll):
+class SicBoEnv(Bankroll, gym.Env, Game):
     metadata = {"render.modes": ["human"]}
 
     def __init__(self, start=1000, min_bet=200, max_bet=1000):
         Bankroll.__init__(self, start=start)
         Game.__init__(self)
-        self.dice = dice
+        self.seed()
         self.min_bet = min_bet
         self.max_bet = max_bet
         self._action_set = sorted(list(self.states.keys()))
+        self.action_space = spaces.Discrete(len(self._action_set))
+        self.observation = spaces.Discrete(2)
+        self.reset()
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return seed
+
+    def _dice(self, num=3):
+        return self.np_random.randint(1, high=7, size=num)
 
     def render(self, mode="human", close=False):
         pass
@@ -34,20 +44,23 @@ class SicBoEnv(gym.Env, Game, Bankroll):
         return sum(bets.values())
 
     @staticmethod
-    def _profit_and_loss(bets, payout):
+    def _reward(bets, payout):
         profit = sum([bets.get(k, 0) * v for k, v in payout.items()])
         loss = sum([v for k, v in bets.items() if payout.get(k, None)])
         return profit - loss
 
-    def step(self, action):
-        bets = self._action_to_bets(action)
-        if self._bet_size(bets) > self.balance:
-            # todo
-            return 0, -self.balance
-        outcome = dice(3)
-        payout = self.game.evaluate(outcome)
-        reward = self._profit_and_loss(bets, payout)
-        return (self.balance,)
+    def _get_obs(self):
+        return [self.balance, std(self.history)]
 
     def _done(self):
         return self.balance < self.min_bet
+
+    def step(self, action):
+        info = {}
+        bets = self._action_to_bets(action)
+        if self._bet_size(bets) > self.balance:
+            return self._get_obs(), -self._bet_size(bets), True, info
+        outcome = self._dice()
+        payout = self.game.evaluate(outcome)
+        reward = self._reward(bets, payout)
+        return self._get_obs(), reward, self._done(), info
