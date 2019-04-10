@@ -10,4 +10,6 @@ setup(
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
     test_suite="tests",
+    install_requires=["gym==0.12.1"],
+    extras_require=dict(testing=["black==19.3b0", "pytest==4.3.1"]),
 )
