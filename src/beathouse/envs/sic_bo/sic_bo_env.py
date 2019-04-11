@@ -17,7 +17,7 @@ class SicBoEnv(Bankroll, gym.Env, Game):
         self.max_bet = max_bet
         self._action_set = sorted(list(self.states.keys()))
         self.action_space = spaces.Discrete(len(self._action_set))
-        self.observation = spaces.Discrete(2)
+        self.observation_space = spaces.Discrete(2)
         self.reset()
 
     def seed(self, seed=None):
