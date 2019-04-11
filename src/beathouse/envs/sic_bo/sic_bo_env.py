@@ -4,7 +4,6 @@ from gym.utils import seeding
 from numpy import std
 from .sic_bo_odd import Game
 from ..base import Bankroll
-from ..register import register
 
 
 class SicBoEnv(Bankroll, gym.Env, Game):
@@ -65,5 +64,3 @@ class SicBoEnv(Bankroll, gym.Env, Game):
         payout = self.game.evaluate(outcome)
         reward = self._reward(bets, payout)
         return self._get_obs(), reward, self._done(), info
-
-register(id="sic_bo-v0", entry_point=SicBoEnv)
