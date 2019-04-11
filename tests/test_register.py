@@ -1,8 +1,21 @@
 import unittest
 import gym
-import src.beathouse 
+import src.beathouse
 
-class TestRegister(unittest.TestCase):
-    def test_register(self):
+
+class TestSicBoRegister(unittest.TestCase):
+    def setUp(self):
         env_name = "sic_bo-v0"
-        gym.make(env_name)
+        self.env = gym.make(env_name)
+
+    def test_spaces(self):
+        assert 50 == self.env.action_space.n
+        assert 2 == self.env.observation_space.n
+
+    def test_step(self):
+        actions = self.env.action_space.n
+        obs, reward, done, info = self.env.step([0] * actions)
+        assert reward == 0
+        assert done == False
+        assert len(info) == 0
+        assert len(obs) == 2

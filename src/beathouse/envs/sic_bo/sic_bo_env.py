@@ -61,6 +61,6 @@ class SicBoEnv(Bankroll, gym.Env, Game):
         if self._bet_size(bets) > self.balance:
             return self._get_obs(), -self._bet_size(bets), True, info
         outcome = self._dice()
-        payout = self.game.evaluate(outcome)
+        payout = self.evaluate(outcome)
         reward = self._reward(bets, payout)
         return self._get_obs(), reward, self._done(), info
