@@ -19,3 +19,12 @@ class TestSicBoRegister(unittest.TestCase):
         assert done == False
         assert len(info) == 0
         assert len(obs) == 2
+
+    def test_lose(self):
+        actions = self.env.action_space.n
+        obs, reward, done, info = self.env.step([200] * actions)
+        print(self.env.history)
+        assert reward < 0
+        assert done == True
+        assert len(info) == 0
+        assert len(obs) == 2

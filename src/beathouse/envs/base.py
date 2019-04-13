@@ -4,7 +4,7 @@ class Bankroll:
         self.balance = start
         self.history = [start]
 
-    def reset(self):
+    def _reset(self):
         self.balance = self.start
         self.history = [self.start]
 

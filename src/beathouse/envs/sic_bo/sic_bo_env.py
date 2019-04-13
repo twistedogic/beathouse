@@ -64,3 +64,7 @@ class SicBoEnv(Bankroll, gym.Env, Game):
         payout = self.evaluate(outcome)
         reward = self._reward(bets, payout)
         return self._get_obs(), reward, self._done(), info
+
+    def reset(self):
+        self._reset()
+        return self._get_obs(), 0, self._done(), {}

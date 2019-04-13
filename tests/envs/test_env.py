@@ -19,5 +19,5 @@ class TestBankroll(unittest.TestCase):
         account = Bankroll(start=100)
         expect = [100]
         account.update(-10)
-        account.reset()
+        account._reset()
         self.assertListEqual(account.history, expect)
