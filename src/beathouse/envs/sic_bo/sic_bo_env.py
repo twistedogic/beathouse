@@ -4,6 +4,7 @@ from gym.utils import seeding
 from numpy import std
 from .sic_bo_odd import Game
 from ..base import Bankroll
+from ..spaces import Array
 
 
 class SicBoEnv(Bankroll, gym.Env, Game):
@@ -16,7 +17,7 @@ class SicBoEnv(Bankroll, gym.Env, Game):
         self.min_bet = min_bet
         self.max_bet = max_bet
         self._action_set = sorted(list(self.states.keys()))
-        self.action_space = spaces.Discrete(len(self._action_set))
+        self.action_space = Array(len(self._action_set), high=max_bet, low=min_bet)
         self.observation_space = spaces.Discrete(2)
         self.reset()
 
